@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרומה</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #f5576c;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .goal-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .goal-title {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #eee;
+            height: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            width: 35%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .goal-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .amount-raised {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        .amount-goal {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .donation-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .amount-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .amount-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .amount-btn:hover {
+            border-color: #f5576c;
+            background: #fff5f5;
+        }
+
+        .amount-btn.selected {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border-color: transparent;
+        }
+
+        .custom-amount {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .custom-amount input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .custom-amount input:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+
+        .donate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .donors-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .donor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .donor-item:last-child {
+            border-bottom: none;
+        }
+
+        .donor-name {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .donor-amount {
+            color: #f5576c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .donor-time {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            animation: popupSlideIn 0.3s ease;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .popup-content h2 {
+            color: #f5576c;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .popup-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .popup-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❤️ תרומה</h1>
+            <p>עזור לנו להמשיך בעבודתנו החשובה!</p>
+        </div>
+
+        <div class="goal-section">
+            <div class="goal-title">מטרת הגיוס</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="goal-info">
+                <div>
+                    <div class="amount-raised" id="raisedAmount">₪2,450</div>
+                    <div class="amount-goal">גובה התרומות</div>
+                </div>
+                <div style="text-align: left;">
+                    <div class="amount-raised" style="font-size: 20px;">₪7,000</div>
+                    <div class="amount-goal">המטרה</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="donation-section">
+            <div class="success-message" id="successMsg">תודה רבה על התרומה! 🎉</div>
+
+            <div class="section-title">בחר סכום תרומה</div>
+            <div class="amount-buttons" id="amountButtons">
+                <button class="amount-btn" onclick="selectAmount(50)">₪50</button>
+                <button class="amount-btn" onclick="selectAmount(100)">₪100</button>
+                <button class="amount-btn selected" onclick="selectAmount(200)">₪200</button>
+                <button class="amount-btn" onclick="selectAmount(500)">₪500</button>
+                <button class="amount-btn" onclick="selectAmount(1000)">₪1000</button>
+            </div>
+
+            <div class="custom-amount">
+                <input type="number" id="customAmount" placeholder="סכום אחר..." min="1">
+                <button class="amount-btn" onclick="selectCustomAmount()" style="flex: 0; padding: 12px 20px;">הזן</button>
+            </div>
+
+            <button class="donate-btn" onclick="processDonation()">לתרום עכשיו 💳</button>
+        </div>
+
+        <div class="donors-section">
+            <div class="section-title">תורמים אחרונים</div>
+            <div id="donorsList"></div>
+        </div>
+    </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>תודה רבה! 🙏</h2>
+            <p>התרומה שלך נקלטה בהצלחה!</p>
+            <button class="popup-btn" onclick="closePopup()">סגור</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedAmount = 200;
+        let donors = [
+            { name: 'אבי מ.', amount: 500, time: 'לפני 2 דקות' },
+            { name: 'דינה ל.', amount: 200, time: 'לפני 15 דקות' },
+            { name: 'עמי כ.', amount: 100, time: 'לפני שעה' },
+            { name: 'שרה א.', amount: 750, time: 'לפני 3 שעות' },
+            { name: 'יוסי ז.', amount: 300, time: 'לפני יום' },
+            { name: 'רונית ש.', amount: 150, time: 'לפני יום' }
+        ];
+
+        function selectAmount(amount) {
+            selectedAmount = amount;
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            document.getElementById('customAmount').value = '';
+        }
+
+        function selectCustomAmount() {
+            const custom = document.getElementById('customAmount').value;
+            if (custom && custom > 0) {
+                selectedAmount = parseInt(custom);
+                document.querySelectorAll('.amount-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            }
+        }
+
+        function processDonation() {
+            if (selectedAmount > 0) {
+                const newDonor = {
+                    name: 'אתה',
+                    amount: selectedAmount,
+                    time: 'עכשיו'
+                };
+                donors.unshift(newDonor);
+
+                const currentRaised = parseInt(document.getElementById('raisedAmount').textContent.replace('₪', '').replace(',', ''));
+                const newAmount = currentRaised + selectedAmount;
+                const percentage = (newAmount / 7000) * 100;
+
+                document.getElementById('raisedAmount').textContent = '₪' + newAmount.toLocaleString();
+                document.getElementById('progressFill').style.width = Math.min(percentage, 100) + '%';
+
+                renderDonors();
+
+                document.getElementById('popup').style.display = 'flex';
+                document.getElementById('successMsg').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('successMsg').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function renderDonors() {
+            const list = document.getElementById('donorsList');
+            list.innerHTML = donors.map(donor => `
+                <div class="donor-item">
+                    <div>
+                        <div class="donor-name">${donor.name}</div>
+                        <div class="donor-time">${donor.time}</div>
+                    </div>
+                    <div class="donor-amount">₪${donor.amount}</div>
+                </div>
+            `).join('');
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        renderDonors();
+    </script>
+</body>
+</html>
