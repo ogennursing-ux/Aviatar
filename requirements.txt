@@ -1,0 +1,9 @@
+moviepy>=1.0.3
+pyttsx3>=2.90
+google-auth-oauthlib>=1.0.0
+google-auth-httplib2>=0.2.0
+google-api-python-client>=2.89
+schedule>=1.2.0
+pillow>=10.0.0
+requests>=2.31.0
+APScheduler>=3.10.4
